@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "drbac"
+version = "0.1.0"
+description = "This is yu hakomori 's bachelor degree graduation research package"
+authors = ["hakomori64 <hakomori64@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+pycryptodome = "^3.10.1"
+python-dotenv = "^0.18.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[virtualenvs]
+in-project = true
+
+[tool.poetry.scripts]
+entity-client = "drbac.entity.client:main"
+
+[tool.poetry.plugins]
