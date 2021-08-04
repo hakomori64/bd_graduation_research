@@ -1,5 +1,7 @@
 from drbac.crypto.aes import AES
 from drbac.connection import ConnectionInterface
+from drbac.database import DatabaseConnectionManager
+from drbac.role import RoleRepository
 
 class RoleManagementClient:
     def delegate_role(self, sbj, obj, issuer):
@@ -36,9 +38,24 @@ class RoleManagementServer:
         # assert connection is established
         assert self.conn is not None and isinstance(self.conn, ConnectionInterface)
 
-        #TODO validate data
         sbj = data['subject']
         obj = data['object']
         issuer = data['issuer']
 
+        #TODO check user has permission to do the operation
+
+        try:
+            RoleRepository.delegate_role(sbj, obj, issuer)
+        except Exception as e:
+            self.conn.send({
+                'type': 'DELEGATE_ROLE_RES1_FAILED',
+                'data': {
+                    'reason': str(e)
+                }
+            })
+            return
         
+        self.conn.send({
+            'type': 'DELEGATE_ROLE_RES1_OK',
+            'data': data
+        })

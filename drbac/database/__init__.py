@@ -16,7 +16,8 @@ class DatabaseConnectionManager:
             'CREATE TABLE IF NOT EXISTS delegations ('
             'id INTEGER PRIMARY KEY,'
             'subject TEXT,'
-            'object TEXT'
+            'object TEXT,'
+            'issuer TEXT'
             ');'
         )
         self.execute_query(query)

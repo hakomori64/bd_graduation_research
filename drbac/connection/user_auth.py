@@ -26,7 +26,7 @@ class AuthClient:
         if not is_valid_actor_format(name):
             raise Exception('invalid name format')
 
-        base_dir = f'actors/{name.replace(".", "/")}'
+        base_dir = f'actors/{name.replace(".", "/users/")}'
 
         f = open(f'{base_dir}/public.pem', 'r')
         public_key = RSA.import_key(f.read())
@@ -108,7 +108,7 @@ class AuthServer:
             })
             return
         
-        base_dir = f'actors/{name.replace(".", "/")}'
+        base_dir = f'actors/{name.replace(".", "/users/")}'
         f = open(f'{base_dir}/public.pem', 'r')
         public_key = RSA.import_key(f.read())
         f.close()
