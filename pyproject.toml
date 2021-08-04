@@ -20,5 +20,6 @@ in-project = true
 
 [tool.poetry.scripts]
 entity-client = "drbac.entity.client:main"
+central-server = "drbac.central.server:main"
 
 [tool.poetry.plugins]

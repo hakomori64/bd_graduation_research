@@ -14,22 +14,61 @@ from dotenv import load_dotenv
 # project import
 from drbac.config import Config
 from drbac.connection import ConnectionInterface
+from drbac.connection.basic_operation import BasicOperationClient
 from drbac.connection.crypto_channel import CryptoChannelClient
+from drbac.connection.user_auth import AuthClient
+from drbac.connection.role_management import RoleManagementClient
 from drbac.crypto.diffie_hellman import DiffieHellman
 
-class Client(CryptoChannelClient):
+
+class Client(
+  BasicOperationClient,
+  CryptoChannelClient,
+  AuthClient,
+  RoleManagementClient):
 
   def __init__(self):
-    self.__conn = None
-  
-  def connect(self, host, port):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.connect((host, port))
+    self.conn = None
 
-    self.__conn = ConnectionInterface(sock, None)
+  def listen_user_input(self):
+    while True:
+      try:
+        query = input('> ')
 
-    self.initialize_crypto_channel() # from CryptoChannelClient
+        if query == 'connect':
+          host = input('host: string > ')
+          port = int(input('port: int > '))
+          self.connect(host, port)
+          print('connection established')
+        elif query == 'encrypt channel':
+          self.initialize_crypto_channel()
+          print('connection is encrypted')
+        elif query == 'identificate':
+          name = input('name: string > ')
+          
+          #TODO automatically find public/private key
+          public_key_path = input('public key path: string > ')
+          private_key_path = input('private key path: string > ')
 
-if __name__ == '__main__':
-  # TODO initialize client
-  print('This is client main program')
+          self.identificate(name, public_key_path, private_key_path)
+          print('identification completed')
+        elif query == 'delegate role':
+          sbj = input('subject: string > ')
+          obj = input('object: string > ')
+          issuer = input('issuer: string > ')
+          self.delegate_role(sbj, obj, issuer)
+          print('role delegation complete')
+        elif query == 'exit':
+          del self.conn
+          print('exit program')
+          break
+        
+      except Exception as err:
+        print(err)
+        print('closing connection')
+        if self.conn is not None:
+          del self.conn
+        break
+
+def main():
+  Client().listen_user_input()

@@ -1,3 +1,5 @@
+import random
+
 from drbac.crypto.aes import AES
 
 class DiffieHellman(AES):
@@ -17,5 +19,5 @@ class DiffieHellman(AES):
     return num
   
   def key_share(self, opponent_public_key):
-    self.__key = (opponent_public_key ** self.__secret_key) % self.__prime
+    self.key = (opponent_public_key ** self.__secret_key) % self.__prime
   

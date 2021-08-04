@@ -12,8 +12,8 @@ from drbac.crypto.aes import AES
 
 class AuthClient:
 
-    def identicate(self, name, public_key_path, private_key_path):
-        assert self.__conn is not None and isclass(self.__conn, ConnectionInterface)
+    def identificate(self, name, public_key_path, private_key_path):
+        assert self.conn is not None and isinstance(self.conn, ConnectionInterface)
 
         """
         args:
@@ -37,9 +37,9 @@ class AuthClient:
             }
         }
 
-        self.__conn.send(data)
+        self.conn.send(data)
 
-        data = self.__conn.recv()
+        data = self.conn.recv()
         if data['type'] == 'AUTH_IDENTIFICATE_RES1_FAILED':
             print('blob key may not be registered')
             print(data['data']['reason'])
@@ -64,33 +64,33 @@ class AuthClient:
                 'signature': base64.b64encode(signature).decode('utf-8')
             }
         }
-        self.__conn.send(data)
+        self.conn.send(data)
 
-        data = self.__conn.recv()
+        data = self.conn.recv()
         if data['type'] == 'AUTH_IDENTIFICATE_RES2_FAILED':
             print('blob key may not be registered')
             print(data['data']['reason'])
             return
 
         aes = AES(data['data']['common_key'])
-        self.__conn.set_crypto(aes)
+        self.conn.set_crypto(aes)
 
 class AuthServer:
 
     # typeがAUTH_IDENTIFICATE_REQ1だった場合、dataが渡されてこの関数が呼び出される
     def identificate(self, data):
-        assert self.__conn is not None and isclass(self.__conn, ConnectionInterface)
+        assert self.conn is not None and isinstance(self.conn, ConnectionInterface)
 
         name = data['name']
         public_key_blob = data['public_key_blob']
 
         # TODO validate name
-        f = open(f'name/public.pem', 'r')
+        f = open(f'actors{name}/public.pem', 'r')
         public_key = RSA.import_key(f.read())
         f.close()
         fingerprint = hashlib.md5(public_key.export_key('DER')).hexdigest()
         if public_key_blob != fingerprint:
-            self.__conn.send({
+            self.conn.send({
                 "type": "AUTH_IDENTIFICATE_RES1_FAILED",
                 "data": {
                     "reason": "invalid public key"
@@ -98,15 +98,15 @@ class AuthServer:
             })
             return
         
-        self.__conn.send({
+        self.conn.send({
             "type": "AUTH_IDENTIFICATE_RES1_OK",
             "data": {}
         })
 
-        data = self.__conn.recv()
+        data = self.conn.recv()
         request_type = data['request']
         if request_type != 'AUTH_IDENTIFICATE_RES2':
-            self.__conn.send({
+            self.conn.send({
                 "type": "AUTH_IDENTIFICATE_RES2_FAILED",
                 "data": {
                     "reason": "invalid request type"
@@ -116,7 +116,7 @@ class AuthServer:
         
         request_name = data['data']['name']
         if request_name != name:
-            self.__conn.send({
+            self.conn.send({
                 "type": "AUTH_IDENTIFICATE_RES2_FAILED",
                 "data": {
                     "reason": "invalid name"
@@ -133,7 +133,7 @@ class AuthServer:
         try:
             pkcs1_15.new(public_key).verify(h, signature)
         except ValueError:
-            self.__conn.send({
+            self.conn.send({
                 "type": "AUTH_IDENTIFICATE_RES2_FAILED",
                 "data": {
                     "reason": "invalid signature or private key"
@@ -142,7 +142,7 @@ class AuthServer:
             return
         
         key = random.randint(0, 100000000)
-        self.__conn.send({
+        self.conn.send({
             "type": "AUTH_IDENTIFICATE_RES2_OK",
             "data": {
                 "common_key": key
@@ -150,4 +150,4 @@ class AuthServer:
         })
 
         aes = AES(key)
-        self.__conn.set_crypto(aes)
+        self.conn.set_crypto(aes)

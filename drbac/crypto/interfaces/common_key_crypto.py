@@ -1,3 +1,5 @@
+from abc import abstractmethod
+
 from drbac.crypto.interfaces.crypto import Crypto
 
 class CommonKeyCrypto(Crypto):

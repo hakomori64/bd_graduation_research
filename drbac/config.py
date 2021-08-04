@@ -1,5 +1,4 @@
 from dotenv import load_dotenv
-from abc import staticmethod
 import os
 
 class Config(object):
@@ -10,12 +9,12 @@ class Config(object):
             cls._instance = super().__new__(cls, *args, **kwargs)
             
             # load environment variables
-            cls.load_variables()
+            cls._load_variables()
 
         return cls._instance
     
-    @staticmethod
-    def _load_variables():
+    @classmethod
+    def _load_variables(cls):
         load_dotenv()
 
         try:
@@ -30,6 +29,9 @@ class Config(object):
             # diffie hellman public keys
             cls._instance.DIFFIE_HELLMAN_PUBLIC_KEY_G = int(os.environ['DIFFIE_HELLMAN_PUBLIC_KEY_G'])
             cls._instance.DIFFIE_HELLMAN_PUBLIC_KEY_P = int(os.environ['DIFFIE_HELLMAN_PUBLIC_KEY_P'])
+
+            # database settings
+            cls._instance.DB_NAME = os.environ['DB_NAME']
 
         except KeyError as err:
             print('environment variables should be set correctly')
