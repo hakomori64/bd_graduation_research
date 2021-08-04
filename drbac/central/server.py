@@ -30,7 +30,7 @@ class ThreadedServer:
         self.sock.listen(5)
         while True:
             client, address = self.sock.accept()
-            client.settimeout(60)
+            client.settimeout(300)
             threading.Thread(target = self.listen_to_client, args = (client, address)).start()
     
     def listen_to_client(self, client, address):
@@ -50,8 +50,12 @@ class Server(
         self.handlers = {
             'CRYPTO_CHANNEL_REQ1': self.initialize_crypto_channel,
             'AUTH_IDENTIFICATE_REQ1': self.identificate,
+            'WHOAMI_REQ1': self.whoami,
             'DELEGATE_ROLE_REQ1': self.delegate_role,
         }
+
+        # save client info
+        name = None
     
     def listen(self):
         print('connection established')

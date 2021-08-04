@@ -14,11 +14,14 @@ from dotenv import load_dotenv
 # project import
 from drbac.config import Config
 from drbac.connection import ConnectionInterface
+
 from drbac.connection.basic_operation import BasicOperationClient
 from drbac.connection.crypto_channel import CryptoChannelClient
 from drbac.connection.user_auth import AuthClient
 from drbac.connection.role_management import RoleManagementClient
+
 from drbac.crypto.diffie_hellman import DiffieHellman
+from drbac.pki import generate_key_pair
 
 
 class Client(
@@ -45,23 +48,24 @@ class Client(
           print('connection is encrypted')
         elif query == 'identificate':
           name = input('name: string > ')
-          
-          #TODO automatically find public/private key
-          public_key_path = input('public key path: string > ')
-          private_key_path = input('private key path: string > ')
-
-          self.identificate(name, public_key_path, private_key_path)
+          self.identificate(name)
           print('identification completed')
+        elif query == 'whoami':
+          self.whoami()
         elif query == 'delegate role':
           sbj = input('subject: string > ')
           obj = input('object: string > ')
           issuer = input('issuer: string > ')
           self.delegate_role(sbj, obj, issuer)
           print('role delegation complete')
+        elif query == 'generate key':
+          name = input('name: string > ')
+          generate_key_pair(name)
         elif query == 'exit':
           del self.conn
           print('exit program')
           break
+
         
       except Exception as err:
         print(err)
