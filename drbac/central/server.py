@@ -52,6 +52,7 @@ class Server(
             'AUTH_IDENTIFICATE_REQ1': self.identificate,
             'WHOAMI_REQ1': self.whoami,
             'DELEGATE_ROLE_REQ1': self.delegate_role,
+            'SEARCH_ROLE_REQ1': self.search_role,
         }
 
         # save client info

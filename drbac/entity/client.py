@@ -58,11 +58,16 @@ class Client(
           issuer = input('issuer: string > ')
           self.delegate_role(sbj, obj, issuer)
           print('role delegation complete')
+        elif query == 'search role':
+          name = input('name of entity / user : string > ')
+          roles = self.search_role(name)
+          print(roles)
+          print('searching role complete')
         elif query == 'generate key':
           actor_type = input('actor_type: (entity, role, user) > ')
           name = input('name: string > ')
           generate_key_pair(actor_type, name)
-        elif query == 'exit':
+        elif query == 'exit' or query == 'quit':
           del self.conn
           print('exit program')
           break

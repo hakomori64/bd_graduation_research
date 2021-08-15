@@ -28,6 +28,9 @@ class DatabaseConnectionManager:
         cur = self._conn.cursor()
         cur.execute(query)
         self._conn.commit()
+        rows = cur.fetchall()
+
+        return rows
 
     def __del__(self):
         if self._conn is not None:

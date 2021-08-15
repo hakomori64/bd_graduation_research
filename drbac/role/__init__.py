@@ -23,3 +23,17 @@ class RoleRepository:
             "INSERT INTO delegations (subject, object, issuer) "
             f'VALUES("{sbj}", "{obj}", "{issuer}");'
         )
+    
+    @staticmethod
+    def search_role(name):
+        name_type = detect_actor_type(name)
+
+        if name_type not in ['entity', 'user']:
+            raise Exception('invalid name format. It must be entity')
+        
+        roles = DatabaseConnectionManager().execute_query(
+            "SELECT object FROM delegations "
+            f'WHERE subject = "{name}"'
+        )
+
+        return list(map(lambda element: element[0], roles))
