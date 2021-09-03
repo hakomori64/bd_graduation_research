@@ -67,11 +67,24 @@ class RoleManagementServer:
         # assert user authenticated successfully
         assert isinstance(self.conn.crypto, AES)
 
+        # assert username is identified
+        assert self.name != None
+
         sbj = data['subject']
         obj = data['object']
         issuer = data['issuer']
 
-        #TODO check user has permission to do the operation
+        try:
+            RoleRepository.validate_delegation(sbj, obj, issuer, self.name)
+        except Exception as e:
+            self.conn.send({
+                'type': 'DELEGATE_ROLE_RES1_FAILED',
+                'data': {
+                    'reason': str(e)
+                }
+            })
+            return
+
 
         try:
             RoleRepository.delegate_role(sbj, obj, issuer)

@@ -68,3 +68,7 @@ def detect_actor_type(name):
         raise Exception('cannot detect actor type(name conflict)')
     
     return actor_type
+
+def get_entity(name):
+
+    return name.split('.')[0]
