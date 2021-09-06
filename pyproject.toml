@@ -8,6 +8,7 @@ authors = ["hakomori64 <hakomori64@gmail.com>"]
 python = "^3.8"
 pycryptodome = "^3.10.1"
 python-dotenv = "^0.18.0"
+Flask = "^2.0.1"
 
 [tool.poetry.dev-dependencies]
 autopep8 = "^1.5.7"
@@ -22,5 +23,6 @@ in-project = true
 [tool.poetry.scripts]
 entity-client = "drbac.entity.client:main"
 central-server = "drbac.central.server:main"
+central-web-server = "drbac.central.web.server:main"
 
 [tool.poetry.plugins]

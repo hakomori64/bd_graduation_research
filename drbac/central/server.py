@@ -7,6 +7,7 @@ from drbac.connection.crypto_channel import CryptoChannelServer
 from drbac.connection.user_auth import AuthServer
 from drbac.connection.role_management import RoleManagementServer
 from drbac.database import DatabaseConnectionManager
+from drbac.central.web.app import start_web_server
 
 class ThreadedServer:
     
@@ -81,4 +82,6 @@ class Server(
                 break
 
 def main():
+    
+    start_web_server()
     ThreadedServer(('127.0.0.1', 8080)).listen()

@@ -41,6 +41,10 @@ def generate_key_pair(actor_type, name):
         raise Exception('invalid format')
 
     base_dir = craft_base_dir(actor_type, name)
+
+    if actor_type == 'entity' and os.path.exists(base_dir):
+        raise Exception('the entity already exists')
+
     if not os.path.exists(base_dir):
         os.makedirs(base_dir)
 
